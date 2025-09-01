@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz Result</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light d-flex flex-column justify-content-center align-items-center py-5">
+
+  <div class="card shadow p-4" style="max-width: 700px; width: 100%;">
+    <h1 class="card-title text-center mb-4">Quiz Result</h1>
+
+    <div class="alert alert-info text-center fs-5" role="alert">
+      {{ message }}
+    </div>
+    {% if log_message %}
+      <div class="alert alert-warning text-center fs-6 mt-2" role="alert">
+        {{ log_message }}
+      </div>
+    {% endif %}
+
+    <h3 class="mb-3">Detailed Feedback</h3>
+    <div class="accordion" id="feedbackAccordion">
+      {% for res in detailed_results %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+          <button class="accordion-button {% if not res.is_correct %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="{{ res.is_correct }}" aria-controls="collapse{{ forloop.counter }}">
+            Question {{ forloop.counter }}: {{ res.question_text }}
+            {% if res.is_correct %}
+              <span class="badge bg-success ms-3">Correct</span>
+            {% else %}
+              <span class="badge bg-danger ms-3">Incorrect</span>
+            {% endif %}
+          </button>
+        </h2>
+        <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if res.is_correct %}show{% endif %}" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#feedbackAccordion">
+          <div class="accordion-body">
+            <p><strong>Your Answer:</strong> 
+              {% if res.is_correct %}
+                <span class="text-success">{{ res.selected_option }}</span>
+              {% else %}
+                <span class="text-danger">{{ res.selected_option }}</span>
+              {% endif %}
+            </p>
+            {% if not res.is_correct %}
+            <p><strong>Correct Answer:</strong> <span class="text-success">{{ res.correct_option }}</span></p>
+            {% endif %}
+          </div>
+        </div>
+      </div>  
+      {% endfor %}
+    </div>
+    <div class="d-grid mt-4">
+      <button class="btn btn-secondary btn-lg" disabled>You have completed the quiz.</button>
+    </div>
+    <div class="d-grid mt-3">
+    <a href="{% url 'index' %}?username={{ username }}&password={{ password }}" class="btn btn-outline-secondary btn-lg">Try again</a>
+    </div>
+    <div class="d-grid mt-3">
+      <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg">Logout</a>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

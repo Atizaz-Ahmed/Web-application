@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz Questions</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: #f2f6fc;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .quiz-container {
+      max-width: 750px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .question-card {
+      background: #ffffff;
+      border-left: 6px solid #0d6efd;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+
+    .question-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1c1f23;
+      margin-bottom: 20px;
+    }
+
+    .list-group-item {
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      transition: background-color 0.2s, border-color 0.2s;
+      background-color: #f8f9fa;
+    }
+
+    .list-group-item:hover {
+      background-color: #e8f0fe;
+      border-color: #0d6efd;
+    }
+
+    .form-check-input {
+      cursor: pointer;
+      transform: scale(1.2);
+      margin-right: 12px;
+      accent-color: #0d6efd;
+    }
+
+    .submit-btn {
+      font-size: 1.2rem;
+      padding: 14px 40px;
+      border-radius: 50px;
+      background-color: #0d6efd;
+      color: #fff;
+      border: none;
+      transition: background-color 0.3s;
+      box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+    }
+
+    .submit-btn:hover {
+      background-color: #0a58ca;
+    }
+  </style>
+</head>
+<body>
+   <p>Attempt {{ attempts }} of {{ max_attempts }}</p>
+  <div class="quiz-container">
+    <h1 class="text-center text-primary mb-5">Take the Quiz</h1>
+
+    <form method="post" action="{% url 'result' %}">
+      {% csrf_token %}
+
+      <!-- Hidden fields to send username/password from context -->
+      <input type="hidden" name="username" value="{{ username }}">
+      <input type="hidden" name="password" value="{{ password }}">
+
+      {% for q in questions %}
+        <div class="question-card">
+          <p class="question-title">{{ forloop.counter }}. {{ q.question_text }}</p>
+          <div class="list-group">
+            {% for option in q.options %}
+              <label class="list-group-item d-flex align-items-center">
+                <input class="form-check-input" type="radio" name="question_{{ q.id }}" value="{{ option }}" required>
+                <span>{{ option }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+
+      <div class="text-center mt-4">
+        <button type="submit" class="submit-btn">Submit Quiz</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
